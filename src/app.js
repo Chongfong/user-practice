@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 
+app.use(express.json());  // remember to add this or the result will be undefined
+app.use(express.urlencoded({ extended: true }));  // remember to add this or the result will be undefined
+
 const customers = [
     { name: 'Alice Johnson', industry: 'Technology' },
     { name: 'Bob Smith', industry: 'Finance' },
@@ -20,6 +23,12 @@ app.get('/api/customers', (req, res) => {
 
 app.post('/', (req, res) => {
     res.send('This is a post request');
+})
+
+app.post('/api/customers', (req, res) => {
+    const customer = req.body;
+    console.log(customer);
+    res.send(customer);
 })
 
 app.listen(PORT, () => {
