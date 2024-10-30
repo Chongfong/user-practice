@@ -1,1 +1,3 @@
-console.log('My First Backend App')
+const { v4: uuidv4 } = require('uuid');
+
+console.log(uuidv4());
