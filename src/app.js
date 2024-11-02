@@ -1,6 +1,9 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
 const PORT = 3000;
+mongoose.set('strictQuery', false);
+
 
 app.use(express.json());  // remember to add this or the result will be undefined
 app.use(express.urlencoded({ extended: true }));  // remember to add this or the result will be undefined
@@ -31,6 +34,16 @@ app.post('/api/customers', (req, res) => {
     res.send(customer);
 })
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-})
+const start = async() => {
+    try{
+        await mongoose.connect();
+        app.listen(PORT, () => {
+            console.log(`Server is listening on port ${PORT}`);
+        })
+    }catch(e){
+        console.log(e.message);
+    }
+    
+}
+
+start();
