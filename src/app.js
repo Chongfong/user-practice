@@ -27,14 +27,33 @@ const customer = new Customer({  // similar to class I think
     // mongoose will automatically add a new property "_id" with a unique value
 });
 
-customer.save();  // save to db
+// change connect url mongodb.net/{databaseName}?retryWrites=true to change the database name
+
+customer.save(); // every time we save a new customer, it will be added to the database
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
 })
 
-app.get('/api/customers', (req, res) => {
-    res.send({"customers": customers});
+app.get('/api/customers', async (req, res) => {
+    // console.log(await mongoose.connection.db.listCollections().toArray()); for debug
+    // {
+    //     name: 'customers',
+    //     type: 'collection',
+    //     options: {},
+    //     info: {
+    //       readOnly: false,
+    //       uuid: new UUID('7934b2ed-510b-4e66-817d-60241cc80c97')
+    //     },
+    //     idIndex: { v: 2, key: [Object], name: '_id_' }
+    //   },
+    try{
+        const result = await Customer.find(); // Customer is the model with the Capital C
+        res.send({"customers": result});  // res.json() also works
+    } catch(e) {
+        res.status(500).json({error: e.message}) // error code and error messages are editable
+    }
+    
 })
 
 app.post('/', (req, res) => {
