@@ -27,7 +27,9 @@ const customer = new Customer({  // similar to class I think
     // mongoose will automatically add a new property "_id" with a unique value
 });
 
-customer.save();  // save to db
+// change connect url mongodb.net/{databaseName}?retryWrites=true to change the database name
+
+customer.save(); // every time we save a new customer, it will be added to the database
 
 app.get('/', (req, res) => {
     res.send('Hello World!');

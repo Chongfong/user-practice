@@ -5,4 +5,4 @@ const customerSchema = new mongoose.Schema({
     industry: String,
 });
 
-module.exports = mongoose.model('Customer', customerSchema);
+module.exports = mongoose.model('client', customerSchema); // "clients" (automatically pluralize) is the collection name under the database 
