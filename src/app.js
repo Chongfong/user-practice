@@ -60,10 +60,32 @@ app.post('/', (req, res) => {
     res.send('This is a post request');
 })
 
-app.post('/api/customers', (req, res) => {
-    const customer = req.body;
+app.post('/api/customers', async(req, res) => {
+    const customer = new Customer(req.body);
     console.log(customer);
-    res.send(customer);
+    // = new Customer({ name: req.body.name, industry: req.body.industry });
+    try{
+        await customer.save();
+        // res.status(201).json(customer); // customizable code
+        // {
+        //     "name": "Donald J. Trump",
+        //     "industry": "finance",
+        //     "_id": "67289092077e9cdcda7feb09",
+        //     "__v": 0
+        //   }
+        // res.status(201).json({customer})
+        res.status(201).json({customer});
+        // {
+        //     "customer": {
+        //       "name": "Donald J. Trump",
+        //       "industry": "finance",
+        //       "_id": "672891e6ad5fa838fc5857aa",
+        //       "__v": 0
+        //     }
+        //   }
+    } catch(e) {
+        res.status(400).json({error: e.message})
+    }
 })
 
 const start = async() => {
