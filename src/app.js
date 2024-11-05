@@ -29,7 +29,7 @@ const customer = new Customer({  // similar to class I think
 
 // change connect url mongodb.net/{databaseName}?retryWrites=true to change the database name
 
-customer.save(); // every time we save a new customer, it will be added to the database
+// customer.save(); // every time we save a new customer, it will be added to the database
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
@@ -55,6 +55,36 @@ app.get('/api/customers', async (req, res) => {
     }
     
 })
+
+app.get('/api/customers/:id', async(req, res) => {
+    const {id: customerId} = req.params;
+    try{
+        const customer = await Customer.findById(customerId);
+        if(!customer){ // handle id not found error
+            res.status(404).json({error: `Customer with id ${customerId} not found`}); 
+        } else {
+            res.json({customer});
+        }
+    }catch(e){
+        res.status(500).json({error: e.message})
+    }
+    // res.json({
+    //     requestParams: req.params,  // id, test
+    //     requestQuery: req.query, // ?name=John&industry=Technology the statement after ? mark
+    // });
+})
+
+// http://localhost:3005/api/customers/12345/test?age=30&gender=male
+// {
+//     "requestParams": {
+//       "id": "12345",
+//       "test": "test"
+//     },
+//     "requestQuery": {
+//       "age": "30",
+//       "gender": "male"
+//     }
+//   }
 
 app.post('/', (req, res) => {
     res.send('This is a post request');
