@@ -56,6 +56,25 @@ app.get('/api/customers', async (req, res) => {
     
 })
 
+app.get('/api/customers/:id/:test', (req, res) => {
+    res.json({
+        requestParams: req.params,  // id, test
+        requestQuery: req.query, // ?name=John&industry=Technology the statement after ? mark
+    });
+})
+
+// http://localhost:3005/api/customers/12345/test?age=30&gender=male
+// {
+//     "requestParams": {
+//       "id": "12345",
+//       "test": "test"
+//     },
+//     "requestQuery": {
+//       "age": "30",
+//       "gender": "male"
+//     }
+//   }
+
 app.post('/', (req, res) => {
     res.send('This is a post request');
 })
