@@ -109,6 +109,26 @@ app.patch('/api/customers/:id', async(req, res) => {
     }
 })
 
+app.patch('/api/orders/:id', async(req, res) => {
+    const orderId = req.params.id;
+    // to prevent id changes every time
+    req.body._id = orderId;
+    try{
+        const result = await Customer.findOneAndUpdate(
+            { 'orders._id': orderId},  // use quote
+            { $set: { 'orders.$': req.body }},  // use $
+            {new: true});
+        if(result){
+            res.json({result});
+        } else {
+            res.status(404).json({error: `Order with id ${orderId} not found`});
+        }
+    }catch (e){
+        res.status(500).json({error: e.message})
+    }
+     
+})
+
 app.post('/', (req, res) => {
     res.send('This is a post request');
 })
