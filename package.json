@@ -4,7 +4,7 @@
   "description": "user practice",
   "main": "src/app.js",
   "scripts": {
-    "start": "npx nodemon src/app.ts",
+    "start": "npx tsc && nodemon src/app.ts",
     "watch": "tsc -p tsconfig.json --watch"
   },
   "author": "",
