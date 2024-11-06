@@ -6,7 +6,7 @@ const dotenv = require('dotenv');  // to use .env, if variables are included, al
 dotenv.config();
 const app = express();
 // const Customer = require('./models/customer');
-import {Customer} from './models/customer';
+import { Customer } from './models/customer';
 import { Request, Response } from 'express';
 mongoose.set('strictQuery', false);
 
