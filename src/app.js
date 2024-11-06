@@ -86,6 +86,29 @@ app.get('/api/customers/:id', async(req, res) => {
 //     }
 //   }
 
+app.put('/api/customers/:id', async(req, res) => {
+    try{
+        const customerId = req.params.id;
+        // const result = await Customer.replaceOne({_id: customerId}, req.body); // 1. property to filter  2. obj to replace
+        const result = await Customer.findOneAndReplace({_id: customerId}, req.body, {new: true}); //use findOneAndReplace to retrieve updated data
+        //  add new property,or it will update the db but return the ORIGINAL data
+        // not update, just change entire obj to db 
+        res.json({result});
+    }catch (e){
+        res.status(500).json({error: e.message})
+    }
+})
+
+app.patch('/api/customers/:id', async(req, res) => {
+    try{
+        const customerId = req.params.id;
+        const result = await Customer.findOneAndUpdate({_id: customerId}, req.body, {new: true}); //use findOneAndUpdate to update data instead of replacing new one
+        res.json({result});
+    }catch (e){
+        res.status(500).json({error: e.message})
+    }
+})
+
 app.post('/', (req, res) => {
     res.send('This is a post request');
 })
