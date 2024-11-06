@@ -99,6 +99,16 @@ app.put('/api/customers/:id', async(req, res) => {
     }
 })
 
+app.patch('/api/customers/:id', async(req, res) => {
+    try{
+        const customerId = req.params.id;
+        const result = await Customer.findOneAndUpdate({_id: customerId}, req.body, {new: true}); //use findOneAndUpdate to update data instead of replacing new one
+        res.json({result});
+    }catch (e){
+        res.status(500).json({error: e.message})
+    }
+})
+
 app.post('/', (req, res) => {
     res.send('This is a post request');
 })
