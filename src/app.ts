@@ -1,13 +1,13 @@
 // use "//  @ts-nocheck" to avoid ts error
-//  @ts-nocheck
 
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');  // to use .env, if variables are included, also need to add dotenv-expand
 dotenv.config();
 const app = express();
-const Customer = require('./models/customer');
-
+// const Customer = require('./models/customer');
+import {Customer} from './models/customer';
+import { Request, Response } from 'express';
 mongoose.set('strictQuery', false);
 
 const PORT = process.env.PORT || 3000;
@@ -34,11 +34,11 @@ app.use(express.urlencoded({ extended: true }));  // remember to add this or the
 
 // // customer.save(); // every time we save a new customer, it will be added to the database
 
-app.get('/', (req, res) => {
+app.get('/', (re: Request, res: Response) => {
     res.send('Hello World!');
 })
 
-app.get('/api/customers', async (req, res) => {
+app.get('/api/customers', async (re: Request, res: Response) => {
     // console.log(await mongoose.connection.db.listCollections().toArray()); for debug
     // {
     //     name: 'customers',
@@ -54,12 +54,16 @@ app.get('/api/customers', async (req, res) => {
         const result = await Customer.find(); // Customer is the model with the Capital C
         res.send({"customers": result});  // res.json() also works
     } catch(e) {
-        res.status(500).json({error: e.message}) // error code and error messages are editable
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        } // error code and error messages are editable
     }
     
 })
 
-app.get('/api/customers/:id', async(req, res) => {
+app.get('/api/customers/:id', async(req:Request, res:Response) => {
     const {id: customerId} = req.params;
     try{
         const customer = await Customer.findById(customerId);
@@ -69,7 +73,11 @@ app.get('/api/customers/:id', async(req, res) => {
             res.json({customer});
         }
     }catch(e){
-        res.status(500).json({error: e.message})
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
     }
     // res.json({
     //     requestParams: req.params,  // id, test
@@ -89,7 +97,7 @@ app.get('/api/customers/:id', async(req, res) => {
 //     }
 //   }
 
-app.get('/api/orders/:id', async(req, res) => {
+app.get('/api/orders/:id', async(req:Request, res:Response) => {
     const {id: orderId} = req.params;
     console.log(orderId)
     try{
@@ -100,11 +108,15 @@ app.get('/api/orders/:id', async(req, res) => {
             res.json({result});
         }
     }catch(e){
-        res.status(500).json({error: e.message})
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
     }
 })
 
-app.put('/api/customers/:id', async(req, res) => {
+app.put('/api/customers/:id', async(req:Request, res:Response) => {
     try{
         const customerId = req.params.id;
         // const result = await Customer.replaceOne({_id: customerId}, req.body); // 1. property to filter  2. obj to replace
@@ -113,21 +125,29 @@ app.put('/api/customers/:id', async(req, res) => {
         // not update, just change entire obj to db 
         res.json({result});
     }catch (e){
-        res.status(500).json({error: e.message})
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
     }
 })
 
-app.patch('/api/customers/:id', async(req, res) => {
+app.patch('/api/customers/:id', async(req:Request, res:Response) => {
     try{
         const customerId = req.params.id;
         const result = await Customer.findOneAndUpdate({_id: customerId}, req.body, {new: true}); //use findOneAndUpdate to update data instead of replacing new one
         res.json({result});
     }catch (e){
-        res.status(500).json({error: e.message})
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
     }
 })
 
-app.patch('/api/orders/:id', async(req, res) => {
+app.patch('/api/orders/:id', async(req:Request, res:Response) => {
     const orderId = req.params.id;
     // to prevent id changes every time
     req.body._id = orderId;
@@ -142,16 +162,20 @@ app.patch('/api/orders/:id', async(req, res) => {
             res.status(404).json({error: `Order with id ${orderId} not found`});
         }
     }catch (e){
-        res.status(500).json({error: e.message})
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
     }
      
 })
 
-app.post('/', (req, res) => {
+app.post('/', (req:Request, res:Response) => {
     res.send('This is a post request');
 })
 
-app.post('/api/customers', async(req, res) => {
+app.post('/api/customers', async(req:Request, res:Response) => {
     const customer = new Customer(req.body);
     console.log(customer);
     // = new Customer({ name: req.body.name, industry: req.body.industry });
@@ -175,17 +199,25 @@ app.post('/api/customers', async(req, res) => {
         //     }
         //   }
     } catch(e) {
-        res.status(400).json({error: e.message})
+        if (e instanceof Error) {
+            res.status(400).json({ error: e.message });
+        } else {
+            res.status(400).json({ error: 'An unknown error occurred' });
+        }
     }
 })
 
-app.delete('/api/customers/:id', async(req, res) => {
+app.delete('/api/customers/:id', async(req:Request, res:Response) => {
     try{
         const customerId = req.params.id;
         const result = await Customer.deleteOne(({_id: customerId}));
         res.json({deletedCount: result.deletedCount});
     } catch (e){
-        res.status(500).json({error: e.message})
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
     }
 })
 
@@ -195,7 +227,7 @@ const start = async() => {
         app.listen(PORT, () => {
             console.log(`Server is listening on port ${PORT}`);
         })
-    }catch(e){
+    }catch(e: any){
         console.log(e.message);
     }
     
