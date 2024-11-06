@@ -141,6 +141,16 @@ app.post('/api/customers', async(req, res) => {
     }
 })
 
+app.delete('/api/customers/:id', async(req, res) => {
+    try{
+        const customerId = req.params.id;
+        const result = await Customer.deleteOne(({_id: customerId}));
+        res.json({deletedCount: result.deletedCount});
+    } catch (e){
+        res.status(500).json({error: e.message})
+    }
+})
+
 const start = async() => {
     try{
         await mongoose.connect(MONGO_URI);
