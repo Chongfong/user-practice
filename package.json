@@ -4,7 +4,8 @@
   "description": "user practice",
   "main": "src/app.js",
   "scripts": {
-    "start": "npx nodemon src/app.js"
+    "start": "npx nodemon src/app.ts",
+    "watch": "tsc -p tsconfig.json --watch"
   },
   "author": "",
   "license": "ISC",
@@ -14,5 +15,8 @@
     "mongoose": "^8.8.0",
     "nodemon": "^3.1.7",
     "uuid": "^11.0.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
   }
 }

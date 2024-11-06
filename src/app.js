@@ -1,41 +1,44 @@
+"use strict";
+// use "//  @ts-nocheck" to avoid ts error
+//  @ts-nocheck
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');  // to use .env, if variables are included, also need to add dotenv-expand
+const dotenv = require('dotenv'); // to use .env, if variables are included, also need to add dotenv-expand
 dotenv.config();
 const app = express();
 const Customer = require('./models/customer');
-
 mongoose.set('strictQuery', false);
-
 const PORT = process.env.PORT || 3000;
-const MONGO_URI = process.env.CONNECT_URL
-
-app.use(express.json());  // remember to add this or the result will be undefined
-app.use(express.urlencoded({ extended: true }));  // remember to add this or the result will be undefined
-
-const customers = [
-    { name: 'Alice Johnson', industry: 'Technology' },
-    { name: 'Bob Smith', industry: 'Finance' },
-    { name: 'Charlie Brown', industry: 'Healthcare' },
-    { name: 'Diana Prince', industry: 'Retail' },
-    { name: 'Ethan Hunt', industry: 'Entertainment' }
-];
-
-const customer = new Customer({  // similar to class I think
-    name: 'John Doe',
-    industry: 'Retail'
-    // mongoose will automatically add a new property "_id" with a unique value
-});
-
-// change connect url mongodb.net/{databaseName}?retryWrites=true to change the database name
-
-// customer.save(); // every time we save a new customer, it will be added to the database
-
+const MONGO_URI = process.env.CONNECT_URL;
+app.use(express.json()); // remember to add this or the result will be undefined
+app.use(express.urlencoded({ extended: true })); // remember to add this or the result will be undefined
+// const customers = [
+//     { name: 'Alice Johnson', industry: 'Technology' },
+//     { name: 'Bob Smith', industry: 'Finance' },
+//     { name: 'Charlie Brown', industry: 'Healthcare' },
+//     { name: 'Diana Prince', industry: 'Retail' },
+//     { name: 'Ethan Hunt', industry: 'Entertainment' }
+// ];
+// const customer = new Customer({  // similar to class I think
+//     name: 'John Doe',
+//     industry: 'Retail'
+//     // mongoose will automatically add a new property "_id" with a unique value
+// });
+// // change connect url mongodb.net/{databaseName}?retryWrites=true to change the database name
+// // customer.save(); // every time we save a new customer, it will be added to the database
 app.get('/', (req, res) => {
     res.send('Hello World!');
-})
-
-app.get('/api/customers', async (req, res) => {
+});
+app.get('/api/customers', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(await mongoose.connection.db.listCollections().toArray()); for debug
     // {
     //     name: 'customers',
@@ -47,33 +50,33 @@ app.get('/api/customers', async (req, res) => {
     //     },
     //     idIndex: { v: 2, key: [Object], name: '_id_' }
     //   },
-    try{
-        const result = await Customer.find(); // Customer is the model with the Capital C
-        res.send({"customers": result});  // res.json() also works
-    } catch(e) {
-        res.status(500).json({error: e.message}) // error code and error messages are editable
+    try {
+        const result = yield Customer.find(); // Customer is the model with the Capital C
+        res.send({ "customers": result }); // res.json() also works
     }
-    
-})
-
-app.get('/api/customers/:id', async(req, res) => {
-    const {id: customerId} = req.params;
-    try{
-        const customer = await Customer.findById(customerId);
-        if(!customer){ // handle id not found error
-            res.status(404).json({error: `Customer with id ${customerId} not found`}); 
-        } else {
-            res.json({customer});
+    catch (e) {
+        res.status(500).json({ error: e.message }); // error code and error messages are editable
+    }
+}));
+app.get('/api/customers/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id: customerId } = req.params;
+    try {
+        const customer = yield Customer.findById(customerId);
+        if (!customer) { // handle id not found error
+            res.status(404).json({ error: `Customer with id ${customerId} not found` });
         }
-    }catch(e){
-        res.status(500).json({error: e.message})
+        else {
+            res.json({ customer });
+        }
+    }
+    catch (e) {
+        res.status(500).json({ error: e.message });
     }
     // res.json({
     //     requestParams: req.params,  // id, test
     //     requestQuery: req.query, // ?name=John&industry=Technology the statement after ? mark
     // });
-})
-
+}));
 // http://localhost:3005/api/customers/12345/test?age=30&gender=male
 // {
 //     "requestParams": {
@@ -85,75 +88,73 @@ app.get('/api/customers/:id', async(req, res) => {
 //       "gender": "male"
 //     }
 //   }
-
-app.get('/api/orders/:id', async(req, res) => {
-    const {id: orderId} = req.params;
-    console.log(orderId)
-    try{
-        const result = await Customer.findOne({'orders._id': orderId});
-        if(!result){
-            res.status(404).json({error: `Order with id ${orderId} not found`}); 
-        } else {
-            res.json({result});
+app.get('/api/orders/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id: orderId } = req.params;
+    console.log(orderId);
+    try {
+        const result = yield Customer.findOne({ 'orders._id': orderId });
+        if (!result) {
+            res.status(404).json({ error: `Order with id ${orderId} not found` });
         }
-    }catch(e){
-        res.status(500).json({error: e.message})
+        else {
+            res.json({ result });
+        }
     }
-})
-
-app.put('/api/customers/:id', async(req, res) => {
-    try{
+    catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}));
+app.put('/api/customers/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
         const customerId = req.params.id;
         // const result = await Customer.replaceOne({_id: customerId}, req.body); // 1. property to filter  2. obj to replace
-        const result = await Customer.findOneAndReplace({_id: customerId}, req.body, {new: true}); //use findOneAndReplace to retrieve updated data
+        const result = yield Customer.findOneAndReplace({ _id: customerId }, req.body, { new: true }); //use findOneAndReplace to retrieve updated data
         //  add new property,or it will update the db but return the ORIGINAL data
         // not update, just change entire obj to db 
-        res.json({result});
-    }catch (e){
-        res.status(500).json({error: e.message})
+        res.json({ result });
     }
-})
-
-app.patch('/api/customers/:id', async(req, res) => {
-    try{
+    catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}));
+app.patch('/api/customers/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
         const customerId = req.params.id;
-        const result = await Customer.findOneAndUpdate({_id: customerId}, req.body, {new: true}); //use findOneAndUpdate to update data instead of replacing new one
-        res.json({result});
-    }catch (e){
-        res.status(500).json({error: e.message})
+        const result = yield Customer.findOneAndUpdate({ _id: customerId }, req.body, { new: true }); //use findOneAndUpdate to update data instead of replacing new one
+        res.json({ result });
     }
-})
-
-app.patch('/api/orders/:id', async(req, res) => {
+    catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}));
+app.patch('/api/orders/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const orderId = req.params.id;
     // to prevent id changes every time
     req.body._id = orderId;
-    try{
-        const result = await Customer.findOneAndUpdate(
-            { 'orders._id': orderId},  // use quote
-            { $set: { 'orders.$': req.body }},  // use $
-            {new: true});
-        if(result){
-            res.json({result});
-        } else {
-            res.status(404).json({error: `Order with id ${orderId} not found`});
+    try {
+        const result = yield Customer.findOneAndUpdate({ 'orders._id': orderId }, // use quote
+        { $set: { 'orders.$': req.body } }, // use $
+        { new: true });
+        if (result) {
+            res.json({ result });
         }
-    }catch (e){
-        res.status(500).json({error: e.message})
+        else {
+            res.status(404).json({ error: `Order with id ${orderId} not found` });
+        }
     }
-     
-})
-
+    catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}));
 app.post('/', (req, res) => {
     res.send('This is a post request');
-})
-
-app.post('/api/customers', async(req, res) => {
+});
+app.post('/api/customers', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const customer = new Customer(req.body);
     console.log(customer);
     // = new Customer({ name: req.body.name, industry: req.body.industry });
-    try{
-        await customer.save();
+    try {
+        yield customer.save();
         // res.status(201).json(customer); // customizable code
         // {
         //     "name": "Donald J. Trump",
@@ -162,7 +163,7 @@ app.post('/api/customers', async(req, res) => {
         //     "__v": 0
         //   }
         // res.status(201).json({customer})
-        res.status(201).json({customer});
+        res.status(201).json({ customer });
         // {
         //     "customer": {
         //       "name": "Donald J. Trump",
@@ -171,31 +172,30 @@ app.post('/api/customers', async(req, res) => {
         //       "__v": 0
         //     }
         //   }
-    } catch(e) {
-        res.status(400).json({error: e.message})
     }
-})
-
-app.delete('/api/customers/:id', async(req, res) => {
-    try{
+    catch (e) {
+        res.status(400).json({ error: e.message });
+    }
+}));
+app.delete('/api/customers/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
         const customerId = req.params.id;
-        const result = await Customer.deleteOne(({_id: customerId}));
-        res.json({deletedCount: result.deletedCount});
-    } catch (e){
-        res.status(500).json({error: e.message})
+        const result = yield Customer.deleteOne(({ _id: customerId }));
+        res.json({ deletedCount: result.deletedCount });
     }
-})
-
-const start = async() => {
-    try{
-        await mongoose.connect(MONGO_URI);
+    catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}));
+const start = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield mongoose.connect(MONGO_URI);
         app.listen(PORT, () => {
             console.log(`Server is listening on port ${PORT}`);
-        })
-    }catch(e){
+        });
+    }
+    catch (e) {
         console.log(e.message);
     }
-    
-}
-
+});
 start();

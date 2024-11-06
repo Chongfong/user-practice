@@ -1,6 +1,6 @@
-"use strict";
 //  @ts-nocheck
 const mongoose = require('mongoose');
+
 // remember to define the schema if any property is added
 const customerSchema = new mongoose.Schema({
     name: {
@@ -15,4 +15,5 @@ const customerSchema = new mongoose.Schema({
         }
     ]
 });
+
 module.exports = mongoose.model('customer', customerSchema); // "clients" (automatically pluralize) is the collection name under the database 
