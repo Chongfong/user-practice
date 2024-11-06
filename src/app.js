@@ -86,6 +86,17 @@ app.get('/api/customers/:id', async(req, res) => {
 //     }
 //   }
 
+app.put('/api/customers/:id', async(req, res) => {
+    try{
+        const customerId = req.params.id;
+        const result = await Customer.replaceOne({_id: customerId}, req.body); // 1. property to filter  2. obj to replace
+        // not update, just change entire obj to db 
+        res.json({updatedCount: result.modifiedCount});
+    }catch (e){
+        res.status(500).json({error: e.message})
+    }
+})
+
 app.post('/', (req, res) => {
     res.send('This is a post request');
 })
