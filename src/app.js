@@ -86,6 +86,21 @@ app.get('/api/customers/:id', async(req, res) => {
 //     }
 //   }
 
+app.get('/api/orders/:id', async(req, res) => {
+    const {id: orderId} = req.params;
+    console.log(orderId)
+    try{
+        const result = await Customer.findOne({'orders._id': orderId});
+        if(!result){
+            res.status(404).json({error: `Order with id ${orderId} not found`}); 
+        } else {
+            res.json({result});
+        }
+    }catch(e){
+        res.status(500).json({error: e.message})
+    }
+})
+
 app.put('/api/customers/:id', async(req, res) => {
     try{
         const customerId = req.params.id;
@@ -107,6 +122,26 @@ app.patch('/api/customers/:id', async(req, res) => {
     }catch (e){
         res.status(500).json({error: e.message})
     }
+})
+
+app.patch('/api/orders/:id', async(req, res) => {
+    const orderId = req.params.id;
+    // to prevent id changes every time
+    req.body._id = orderId;
+    try{
+        const result = await Customer.findOneAndUpdate(
+            { 'orders._id': orderId},  // use quote
+            { $set: { 'orders.$': req.body }},  // use $
+            {new: true});
+        if(result){
+            res.json({result});
+        } else {
+            res.status(404).json({error: `Order with id ${orderId} not found`});
+        }
+    }catch (e){
+        res.status(500).json({error: e.message})
+    }
+     
 })
 
 app.post('/', (req, res) => {
