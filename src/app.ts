@@ -34,11 +34,33 @@ app.use(express.urlencoded({ extended: true }));  // remember to add this or the
 
 // // customer.save(); // every time we save a new customer, it will be added to the database
 
-app.get('/', (re: Request, res: Response) => {
-    res.send('Hello World!');
+app.get('/', (req: Request, res: Response) => {
+    // res.send('Hello World!');
+    res.sendFile('./views/index.html', { root: __dirname }); // absolute path, so we need to add the root
 })
 
-app.get('/api/customers', async (re: Request, res: Response) => {
+app.get('/about', (req: Request, res: Response) => {
+    res.sendFile('./views/about.html', { root: __dirname });
+})
+
+// redirect
+
+app.get('/about-us', (req: Request, res: Response) => {
+    res.redirect('/about');
+})
+
+// 404 page
+// MUST BE AT THE END!!
+
+// check the url is matched from top to bottom, if matched, run the function and stop
+app.use((req: Request, res: Response) => {
+    res.status(404).sendFile('./views/404.html', { root: __dirname });
+})
+
+
+// apis
+
+app.get('/api/customers', async (req: Request, res: Response) => {
     // console.log(await mongoose.connection.db.listCollections().toArray()); for debug
     // {
     //     name: 'customers',
