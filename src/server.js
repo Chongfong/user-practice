@@ -10,12 +10,33 @@ const server = http.createServer((req, res) => {
     // res.write('<h1>Hello World</h1>');
     // res.end();  // remember to end the response
 
+    let path = './src/views';
+    switch(req.url){
+      case '/':
+        path += '/index.html';
+        res.statusCode = 200;
+        break;
+      case '/about':
+        path += '/about.html';
+        res.statusCode = 200;
+        break;
+      case '/about-us':
+        res.statusCode = 301;
+        res.setHeader('Location', '/about');  // redirect
+        res.end();
+        break;
+      default:
+        path += '/404.html';
+        res.statusCode = 404;
+        break;
+    }
+
     // send an html file
-    fs.readFile('./src/views/index.html', (err, data) => {
+    fs.readFile(path, (err, data) => {
         if (err) {
             console.log(err);
             res.writeHead(500);
-            res.end('Error loading index.html');
+            res.end('Error');
         } else {
             // res.write(data);
             res.end(data); // if there's only one line, can put the data inside the end
