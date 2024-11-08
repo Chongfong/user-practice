@@ -5,6 +5,12 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');  // to use .env, if variables are included, also need to add dotenv-expand
 dotenv.config();
 const app = express();
+
+// register view engine
+app.set('view engine', 'ejs');
+app.set('views', './src/views'); // set views folder
+
+
 // const Customer = require('./models/customer');
 import { Customer } from './models/customer';
 import { Request, Response } from 'express';
@@ -36,11 +42,12 @@ app.use(express.urlencoded({ extended: true }));  // remember to add this or the
 
 app.get('/', (req: Request, res: Response) => {
     // res.send('Hello World!');
-    res.sendFile('./views/index.html', { root: __dirname }); // absolute path, so we need to add the root
+    // res.sendFile('./views/index.html', { root: __dirname }); // absolute path, so we need to add the root
+    res.render('index'); // ejs
 })
 
 app.get('/about', (req: Request, res: Response) => {
-    res.sendFile('./views/about.html', { root: __dirname });
+    res.render('about');
 })
 
 // redirect
@@ -49,12 +56,16 @@ app.get('/about-us', (req: Request, res: Response) => {
     res.redirect('/about');
 })
 
+app.get('/blogs/create', (req: Request, res: Response) => {
+    res.render('create');
+})
+
 // 404 page
 // MUST BE AT THE END!!
 
 // check the url is matched from top to bottom, if matched, run the function and stop
 app.use((req: Request, res: Response) => {
-    res.status(404).sendFile('./views/404.html', { root: __dirname });
+    res.status(404).render('404');
 })
 
 
