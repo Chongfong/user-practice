@@ -43,11 +43,17 @@ app.use(express.urlencoded({ extended: true }));  // remember to add this or the
 app.get('/', (req: Request, res: Response) => {
     // res.send('Hello World!');
     // res.sendFile('./views/index.html', { root: __dirname }); // absolute path, so we need to add the root
-    res.render('index'); // ejs
+
+    const blogs = [
+        {title: 'Trump\’s master plan for a radical reformation of the US government', snippet: 'Lorem ipsum dolor sit amet consectetur'},
+        {title: 'Ukraine is forced to confront a brutal Trump reality that it hoped would never happen', snippet: 'Ut in quam sagittis, tincidunt augue at, sagittis nisl.'},
+        {title: 'Latest on the 2024 election and Trump’s presidential transition', snippet: 'Ut mi nisl, egestas nec dolor ac, venenatis accumsan libero.'},
+      ];
+    res.render('index', {title: 'Home', blogs}); // ejs
 })
 
 app.get('/about', (req: Request, res: Response) => {
-    res.render('about');
+    res.render('about', {title: 'About'});
 })
 
 // redirect
@@ -57,7 +63,7 @@ app.get('/about-us', (req: Request, res: Response) => {
 })
 
 app.get('/blogs/create', (req: Request, res: Response) => {
-    res.render('create');
+    res.render('create', {title: 'Create a new blog'});
 })
 
 // 404 page
@@ -65,7 +71,7 @@ app.get('/blogs/create', (req: Request, res: Response) => {
 
 // check the url is matched from top to bottom, if matched, run the function and stop
 app.use((req: Request, res: Response) => {
-    res.status(404).render('404');
+    res.status(404).render('404', {title: '404'});
 })
 
 
