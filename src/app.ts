@@ -23,6 +23,10 @@ app.use(express.json());  // remember to add this or the result will be undefine
 app.use(express.urlencoded({ extended: true }));  // remember to add this or the result will be undefined
 
 // middleware
+// 3rd party middleware like: morgan, helmet...
+
+// static files
+app.use(express.static('src/public'));
 
 app.use((req: Request, res: Response, next: any) => { // run before every request
     console.log('new request made');
