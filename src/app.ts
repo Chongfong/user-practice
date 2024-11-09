@@ -22,6 +22,21 @@ const MONGO_URI = process.env.CONNECT_URL
 app.use(express.json());  // remember to add this or the result will be undefined
 app.use(express.urlencoded({ extended: true }));  // remember to add this or the result will be undefined
 
+// middleware
+// 3rd party middleware like: morgan, helmet...
+
+// static files
+app.use(express.static('src/public'));
+
+app.use((req: Request, res: Response, next: any) => { // run before every request
+    console.log('new request made');
+    console.log('host: ', req.hostname);
+    console.log('path: ', req.path);
+    console.log('method: ', req.method);
+    next(); // continue to the next middleware
+})
+
+
 // const customers = [
 //     { name: 'Alice Johnson', industry: 'Technology' },
 //     { name: 'Bob Smith', industry: 'Finance' },
