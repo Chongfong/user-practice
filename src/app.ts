@@ -13,6 +13,7 @@ app.set('views', './src/views'); // set views folder
 
 // const Customer = require('./models/customer');
 import { Customer } from './models/customer';
+import { Blog } from './models/blog';
 import { Request, Response } from 'express';
 mongoose.set('strictQuery', false);
 
@@ -81,13 +82,97 @@ app.get('/blogs/create', (req: Request, res: Response) => {
     res.render('create', {title: 'Create a new blog'});
 })
 
-// 404 page
-// MUST BE AT THE END!!
 
-// check the url is matched from top to bottom, if matched, run the function and stop
-app.use((req: Request, res: Response) => {
-    res.status(404).render('404', {title: '404'});
+// api for blogs
+
+app.get('/api/blogs', async(req: Request, res: Response) => {
+    try{
+      const result = await Blog.find();
+      res.json({result});
+    }catch(e){
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
+    }
+});
+
+app.get('/api/blogs/:id', async(req:Request, res:Response) => {
+    const {id: blogId} = req.params;
+    try{
+        const result = await Blog.findById(blogId);
+        if(!result){
+            res.status(400).json({error: `Blog with id ${blogId} not found`});
+        } else {
+            res.json({result});
+        }
+    }catch(e){
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
+    }
+});
+
+app.post('/api/blogs', async(req: Request, res:Response) => {
+    const blog = new Blog(req.body);
+    try{
+        await blog.save();
+        res.status(201).json({blog});
+    }catch(e){
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
+    }
+});
+
+app.put('/api/blogs/:id', async(req:Request, res:Response) => {
+    const {id: blogId} = req.params;
+    try{
+        const result = await Blog.findOneAndReplace({_id: blogId} ,req.body, {new: true});
+        res.json({result});
+    }catch(e){
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
+    }
+});
+
+app.patch('/api/blogs/:id', async(req:Request, res:Response) => {
+    const {id: blogId} = req.params;
+    try{
+      const result = await Blog.findByIdAndUpdate({_id: blogId}, req.body, {new: true});
+      res.json({result});
+    }catch(e){
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
+    }
+});
+
+app.delete('/api/blogs/:id', async(req:Request, res:Response) => {
+    const {id: blogId} = req.params;
+    try{
+      const result = await Blog.deleteOne({_id: blogId});
+      res.json({deletedCount: result.deletedCount});
+    }catch(e){
+        if (e instanceof Error) {
+            res.status(500).json({ error: e.message });
+        } else {
+            res.status(500).json({ error: 'An unknown error occurred' });
+        }
+    }
 })
+
+
 
 
 // apis
@@ -274,6 +359,15 @@ app.delete('/api/customers/:id', async(req:Request, res:Response) => {
         }
     }
 })
+
+// 404 page
+// MUST BE AT THE END!!
+
+// check the url is matched from top to bottom, if matched, run the function and stop
+app.use((req: Request, res: Response) => {
+    res.status(404).render('404', {title: '404'});
+})
+
 
 const start = async() => {
     try{
