@@ -5,6 +5,12 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');  // to use .env, if variables are included, also need to add dotenv-expand
 dotenv.config();
 const app = express();
+
+// register view engine
+app.set('view engine', 'ejs');
+app.set('views', './src/views'); // set views folder
+
+
 // const Customer = require('./models/customer');
 import { Customer } from './models/customer';
 import { Request, Response } from 'express';
@@ -34,11 +40,44 @@ app.use(express.urlencoded({ extended: true }));  // remember to add this or the
 
 // // customer.save(); // every time we save a new customer, it will be added to the database
 
-app.get('/', (re: Request, res: Response) => {
-    res.send('Hello World!');
+app.get('/', (req: Request, res: Response) => {
+    // res.send('Hello World!');
+    // res.sendFile('./views/index.html', { root: __dirname }); // absolute path, so we need to add the root
+
+    const blogs = [
+        {title: 'Trump\’s master plan for a radical reformation of the US government', snippet: 'Lorem ipsum dolor sit amet consectetur'},
+        {title: 'Ukraine is forced to confront a brutal Trump reality that it hoped would never happen', snippet: 'Ut in quam sagittis, tincidunt augue at, sagittis nisl.'},
+        {title: 'Latest on the 2024 election and Trump’s presidential transition', snippet: 'Ut mi nisl, egestas nec dolor ac, venenatis accumsan libero.'},
+      ];
+    res.render('index', {title: 'Home', blogs}); // ejs
 })
 
-app.get('/api/customers', async (re: Request, res: Response) => {
+app.get('/about', (req: Request, res: Response) => {
+    res.render('about', {title: 'About'});
+})
+
+// redirect
+
+app.get('/about-us', (req: Request, res: Response) => {
+    res.redirect('/about');
+})
+
+app.get('/blogs/create', (req: Request, res: Response) => {
+    res.render('create', {title: 'Create a new blog'});
+})
+
+// 404 page
+// MUST BE AT THE END!!
+
+// check the url is matched from top to bottom, if matched, run the function and stop
+app.use((req: Request, res: Response) => {
+    res.status(404).render('404', {title: '404'});
+})
+
+
+// apis
+
+app.get('/api/customers', async (req: Request, res: Response) => {
     // console.log(await mongoose.connection.db.listCollections().toArray()); for debug
     // {
     //     name: 'customers',
