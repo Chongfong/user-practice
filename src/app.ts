@@ -57,19 +57,23 @@ app.use((req: Request, res: Response, next: any) => { // run before every reques
 // // customer.save(); // every time we save a new customer, it will be added to the database
 
 app.get('/', (req: Request, res: Response) => {
-    // res.send('Hello World!');
-    // res.sendFile('./views/index.html', { root: __dirname }); // absolute path, so we need to add the root
-
-    const blogs = [
-        {title: 'Trump\’s master plan for a radical reformation of the US government', snippet: 'Lorem ipsum dolor sit amet consectetur'},
-        {title: 'Ukraine is forced to confront a brutal Trump reality that it hoped would never happen', snippet: 'Ut in quam sagittis, tincidunt augue at, sagittis nisl.'},
-        {title: 'Latest on the 2024 election and Trump’s presidential transition', snippet: 'Ut mi nisl, egestas nec dolor ac, venenatis accumsan libero.'},
-      ];
-    res.render('index', {title: 'Home', blogs}); // ejs
+  res.redirect('/blogs');
 })
 
 app.get('/about', (req: Request, res: Response) => {
     res.render('about', {title: 'About'});
+})
+
+app.get('/blogs', (req: Request, res: Response) => {
+    // res.send('Hello World!');
+    // res.sendFile('./views/index.html', { root: __dirname }); // absolute path, so we need to add the root
+    Blog.find().sort({updatedAt: 1}) // newest first
+      .then((result) => {
+        console.log(result)
+        res.render('index', {title: 'All Blogs', blogs: result}); // ejs
+    }).catch((e) => {
+        res.json({error: e.message});
+    })
 })
 
 // redirect
