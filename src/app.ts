@@ -76,6 +76,18 @@ app.get('/blogs', (req: Request, res: Response) => {
     })
 })
 
+app.post('/blogs', (req: Request, res: Response) => {
+    console.log(req.body);
+    const blog = new Blog(req.body);
+    console.log(blog);
+    blog.save()
+      .then((result) => {
+        res.redirect('/blogs');
+    }).catch((e) => {
+        res.json({error: e.message});
+    })
+})
+
 // redirect
 
 app.get('/about-us', (req: Request, res: Response) => {
