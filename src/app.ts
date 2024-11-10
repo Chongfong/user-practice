@@ -76,6 +76,16 @@ app.get('/blogs', (req: Request, res: Response) => {
     })
 })
 
+app.get('/blogs/:id', (req: Request, res: Response) => {
+    const {id: blogId} = req.params;
+    Blog.findById(blogId)
+    .then((result) => {
+        res.render('details', {title: 'Blog Details', blog: result});
+    }).catch((e) => {
+        res.json({error: e.message});
+    })
+})
+
 app.post('/blogs', (req: Request, res: Response) => {
     console.log(req.body);
     const blog = new Blog(req.body);
