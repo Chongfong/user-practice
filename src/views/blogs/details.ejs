@@ -10,7 +10,9 @@
         <p><%= blog.body %></p>
       </div>
       <!-- data attribute with custom name data-{anything} to save the id -->
-      <a class="delete" data-doc="<%= blog._id %>">delete</a>
+      <a class="delete" data-doc="<%= blog._id %>">
+        <img src="/trashcan.svg" alt="delete icon" />
+      </a>
     </div>
 
     <!-- execute by browser(frontend) -->
