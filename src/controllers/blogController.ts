@@ -7,7 +7,7 @@ const blog_index = (req: Request, res: Response) => {
     Blog.find().sort({updatedAt: 1}) // newest first
       .then((result) => {
         console.log(result)
-        res.render('index', {title: 'All Blogs', blogs: result}); // ejs
+        res.render('blogs/index', {title: 'All Blogs', blogs: result}); // ejs
     }).catch((e) => {
         res.json({error: e.message});
     })
@@ -17,14 +17,14 @@ const blog_details = (req: Request, res: Response) => {
     const {id: blogId} = req.params;
     Blog.findById(blogId)
     .then((result) => {
-        res.render('details', {title: 'Blog Details', blog: result});
+        res.render('blogs/details', {title: 'Blog Details', blog: result});
     }).catch((e) => {
         res.json({error: e.message});
     })
 }
 
 const blog_create_get = (req: Request, res: Response) => {
-    res.render('create', {title: 'Create a new blog'});
+    res.render('blogs/create', {title: 'Create a new blog'});
 }
 
 const blog_create_post = (req: Request, res: Response) => {
