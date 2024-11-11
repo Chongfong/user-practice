@@ -1,8 +1,6 @@
 const express = require('express');
 
 const router = express.Router();
-import { Blog } from '../models/blog';
-import { Request, Response } from 'express';
 import { blog_index, blog_details, blog_create_get, blog_create_post, blog_delete } from '../controllers/blogController';
 
 router.get('/', blog_index);
