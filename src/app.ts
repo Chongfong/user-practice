@@ -15,6 +15,7 @@ app.set('views', './src/views'); // set views folder
 import { Customer } from './models/customer';
 import { Blog } from './models/blog';
 import { Request, Response } from 'express';
+import blogRoutes from './routes/blogRoutes';
 mongoose.set('strictQuery', false);
 
 const PORT = process.env.PORT || 3000;
@@ -64,64 +65,13 @@ app.get('/about', (req: Request, res: Response) => {
     res.render('about', {title: 'About'});
 })
 
-app.get('/blogs', (req: Request, res: Response) => {
-    // res.send('Hello World!');
-    // res.sendFile('./views/index.html', { root: __dirname }); // absolute path, so we need to add the root
-    Blog.find().sort({updatedAt: 1}) // newest first
-      .then((result) => {
-        console.log(result)
-        res.render('index', {title: 'All Blogs', blogs: result}); // ejs
-    }).catch((e) => {
-        res.json({error: e.message});
-    })
-})
 
-app.post('/blogs', (req: Request, res: Response) => {
-    console.log(req.body);
-    const blog = new Blog(req.body);
-    console.log(blog);
-    blog.save()
-      .then((result) => {
-        res.redirect('/blogs');
-    }).catch((e) => {
-        res.json({error: e.message});
-    })
-})
-
-app.delete('/blogs/:id', (req: Request, res: Response) => {
-    const {id: blogId} = req.params;
-    Blog.findByIdAndDelete(blogId)
-    .then(() => {
-        // NOTE with frontend AJAX, redirect does nothing
-        // res.redirect('/blogs'); 
-        res.json({redirect: '/blogs'});
-    }).catch((e) => {
-        res.json({error: e.message});
-    })
-}) 
 
 // redirect
 
 app.get('/about-us', (req: Request, res: Response) => {
     res.redirect('/about');
 })
-
-app.get('/blogs/create', (req: Request, res: Response) => {
-    res.render('create', {title: 'Create a new blog'});
-})
-
-// NOTE: check if there is a id in the url
-
-app.get('/blogs/:id', (req: Request, res: Response) => {
-    const {id: blogId} = req.params;
-    Blog.findById(blogId)
-    .then((result) => {
-        res.render('details', {title: 'Blog Details', blog: result});
-    }).catch((e) => {
-        res.json({error: e.message});
-    })
-})
-
 
 // api for blogs
 
@@ -399,6 +349,11 @@ app.delete('/api/customers/:id', async(req:Request, res:Response) => {
         }
     }
 })
+
+// blog routes
+
+// app.use(blogRoutes);
+app.use('/blogs', blogRoutes);
 
 // 404 page
 // MUST BE AT THE END!!
