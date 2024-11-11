@@ -13,7 +13,6 @@ app.set('views', './src/views'); // set views folder
 
 // const Customer = require('./models/customer');
 import { Customer } from './models/customer';
-import { Blog } from './models/blog';
 import { Request, Response } from 'express';
 import blogRoutes from './routes/blogRoutes';
 import blogApiRoutes from './routes/blogApiRoutes';
