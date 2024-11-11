@@ -76,16 +76,6 @@ app.get('/blogs', (req: Request, res: Response) => {
     })
 })
 
-app.get('/blogs/:id', (req: Request, res: Response) => {
-    const {id: blogId} = req.params;
-    Blog.findById(blogId)
-    .then((result) => {
-        res.render('details', {title: 'Blog Details', blog: result});
-    }).catch((e) => {
-        res.json({error: e.message});
-    })
-})
-
 app.post('/blogs', (req: Request, res: Response) => {
     console.log(req.body);
     const blog = new Blog(req.body);
@@ -98,6 +88,18 @@ app.post('/blogs', (req: Request, res: Response) => {
     })
 })
 
+app.delete('/blogs/:id', (req: Request, res: Response) => {
+    const {id: blogId} = req.params;
+    Blog.findByIdAndDelete(blogId)
+    .then(() => {
+        // NOTE with frontend AJAX, redirect does nothing
+        // res.redirect('/blogs'); 
+        res.json({redirect: '/blogs'});
+    }).catch((e) => {
+        res.json({error: e.message});
+    })
+}) 
+
 // redirect
 
 app.get('/about-us', (req: Request, res: Response) => {
@@ -106,6 +108,18 @@ app.get('/about-us', (req: Request, res: Response) => {
 
 app.get('/blogs/create', (req: Request, res: Response) => {
     res.render('create', {title: 'Create a new blog'});
+})
+
+// NOTE: check if there is a id in the url
+
+app.get('/blogs/:id', (req: Request, res: Response) => {
+    const {id: blogId} = req.params;
+    Blog.findById(blogId)
+    .then((result) => {
+        res.render('details', {title: 'Blog Details', blog: result});
+    }).catch((e) => {
+        res.json({error: e.message});
+    })
 })
 
 

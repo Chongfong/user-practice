@@ -9,8 +9,24 @@
       <div class="content">
         <p><%= blog.body %></p>
       </div>
+      <!-- data attribute with custom name data-{anything} to save the id -->
       <a class="delete" data-doc="<%= blog._id %>">delete</a>
     </div>
+
+    <!-- execute by browser(frontend) -->
+    <script>
+      const trashcan = document.querySelector("a.delete");
+      trashcan.addEventListener("click", (e) => {
+        const endpoint = `/blogs/${trashcan.dataset.doc}`;
+
+        fetch(endpoint, { method: "DELETE" })
+          .then((res) => res.json())
+          .then((data) => (window.location.href = data.redirect))
+          .catch((e) => {
+            console.log(e.message);
+          });
+      });
+    </script>
 
     <%- include("./partials/footer.ejs") %>
   </body>
