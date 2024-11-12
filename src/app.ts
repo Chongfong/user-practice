@@ -16,6 +16,7 @@ import { Customer } from './models/customer';
 import { Request, Response } from 'express';
 import blogRoutes from './routes/blogRoutes';
 import blogApiRoutes from './routes/blogApiRoutes';
+import authRoutes from './routes/authRoutes';
 mongoose.set('strictQuery', false);
 
 const PORT = process.env.PORT || 3000;
@@ -264,6 +265,9 @@ app.use('/blogs', blogRoutes);
 
 // api for blogs
 app.use('/api/blogs', blogApiRoutes);
+
+// auth routes
+app.use(authRoutes);
 
 // 404 page
 // MUST BE AT THE END!!
