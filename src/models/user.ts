@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { isEmail } from "validator";
+import bcrypt from 'bcrypt';
 
 const userSchema = new Schema({
     email: {
@@ -17,14 +18,15 @@ const userSchema = new Schema({
 });
 
 // fire a function after doc saved to db
-userSchema.post('save', function(doc, next) {  // POST not post request
-    console.log('New user was saved', doc);
-    next();  // remember to call next
-});
+// userSchema.post('save', function(doc, next) {  // POST not post request
+//     console.log('New user was saved', doc);
+//     next();  // remember to call next
+// });
 
 // fire a function before doc saved to db
 userSchema.pre('save', async function(next) {
-    console.log('user about to be created and saved', this) // this = user instance
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt);
     next();
 });
 
