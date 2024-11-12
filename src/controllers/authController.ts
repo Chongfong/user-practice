@@ -1,6 +1,24 @@
 import { Request, Response } from "express";
 import { User } from "../models/user";
 
+
+interface ValidationError {
+    message: string;
+    code?: string;
+    errors?: { [key: string]: { message: string; path: string } };
+}
+
+const handleErrors = (err: ValidationError) => {
+    let errors = { email: '', password: '' };
+    if (err.message.includes('user validation failed') && err.errors) {
+        Object.values(err.errors).forEach((properties) => {
+            errors[properties.path as keyof typeof errors] = properties.message;
+        });
+    }
+    return errors;
+};
+
+
 const signup_get = (req: Request, res: Response) => {
     res.render('auths/signup', {title: 'Sign Up'});
 }
@@ -13,7 +31,10 @@ const signup_post = (req: Request, res: Response) => {
     const { email, password } = req.body;
     User.create({email, password})
     .then((user) => res.status(201).json(user))
-    .catch((e) => res.status(400).json({error: e.message}))
+    .catch((e) => {
+        const errors = handleErrors(e);
+        res.status(400).json({error: errors})
+    })
 }
 
 const login_post = (req: Request, res: Response) => {
