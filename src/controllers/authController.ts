@@ -4,12 +4,20 @@ import { User } from "../models/user";
 
 interface ValidationError {
     message: string;
-    code?: string;
+    code?: string | number;
     errors?: { [key: string]: { message: string; path: string } };
 }
 
 const handleErrors = (err: ValidationError) => {
     let errors = { email: '', password: '' };
+
+    // duplicate email error
+    if (err.code === 11000) {
+        errors.email = 'This email is already registered';
+        return errors;
+    }
+
+    // validation errors
     if (err.message.includes('user validation failed') && err.errors) {
         Object.values(err.errors).forEach((properties) => {
             errors[properties.path as keyof typeof errors] = properties.message;
