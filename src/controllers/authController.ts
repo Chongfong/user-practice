@@ -64,6 +64,8 @@ const login_post = async (req: Request, res: Response) => {
     const {email, password} = req.body;
     try {
         const user = await User.login(email, password);
+        const token = createToken(user._id);
+        res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000}); // 3 days in ms
         res.status(200).json({user: user._id});
     } catch (e) {
         if (e instanceof Error) {
