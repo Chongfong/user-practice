@@ -18,6 +18,7 @@ import blogRoutes from './routes/blogRoutes';
 import blogApiRoutes from './routes/blogApiRoutes';
 import authRoutes from './routes/authRoutes';
 import cookieParser from 'cookie-parser';
+import requireAuth from './middleware/authMiddleware';
 mongoose.set('strictQuery', false);
 
 const PORT = process.env.PORT || 3000;
@@ -263,7 +264,7 @@ app.delete('/api/customers/:id', async(req:Request, res:Response) => {
 // blog routes
 
 // app.use(blogRoutes);
-app.use('/blogs', blogRoutes);
+app.use('/blogs', requireAuth, blogRoutes);
 
 // api for blogs
 app.use('/api/blogs', blogApiRoutes);
