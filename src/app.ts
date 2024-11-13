@@ -18,7 +18,7 @@ import blogRoutes from './routes/blogRoutes';
 import blogApiRoutes from './routes/blogApiRoutes';
 import authRoutes from './routes/authRoutes';
 import cookieParser from 'cookie-parser';
-import requireAuth from './middleware/authMiddleware';
+import { requireAuth, checkUser } from './middleware/authMiddleware';
 mongoose.set('strictQuery', false);
 
 const PORT = process.env.PORT || 3000;
@@ -33,6 +33,8 @@ app.use(cookieParser());
 
 // static files
 app.use(express.static('src/public'));
+
+app.use('*', checkUser); // for all routes
 
 app.use((req: Request, res: Response, next: any) => { // run before every request
     console.log('new request made');

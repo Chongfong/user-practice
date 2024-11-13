@@ -1,6 +1,7 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Request, Response, NextFunction } from 'express';
+import { User } from '../models/user';
 dotenv.config();
 
 const SECRET = process.env.SECRET_KEY as string;
@@ -27,4 +28,28 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-export default requireAuth;
+// check current user
+
+const checkUser = (req: Request, res: Response, next: NextFunction) => {
+    const token = req.cookies.jwt;
+
+    if(token){
+      jwt.verify(token, SECRET, async (err: jwt.VerifyErrors | null, decodedToken:  JwtPayload | string | undefined) => {
+        if(err){
+          console.log(err.message);
+          res.locals.user = null;
+          next();
+        } else if ( decodedToken && typeof decodedToken !== 'string' ) {
+          console.log(decodedToken);
+          let user = await User.findById(decodedToken.id);
+          res.locals.user = user;  // res.locals.{any} = global variable
+          next();
+        }
+        })
+    } else {
+      res.locals.user = null;
+      next();
+    }
+}
+
+export { requireAuth, checkUser };
