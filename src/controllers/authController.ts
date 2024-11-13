@@ -22,6 +22,16 @@ const handleErrors = (err: ValidationError) => {
         return errors;
     }
 
+    // incorrect email
+    if (err.message === 'User not found') { // same as user.login static method
+        errors.email = 'User not found';
+    }
+
+    // incorrect password
+    if (err.message === 'Invalid password') {
+        errors.password = 'Invalid password';
+    }
+
     // validation errors
     if (err.message.includes('user validation failed') && err.errors) {
         Object.values(err.errors).forEach((properties) => {
@@ -55,14 +65,22 @@ const signup_post = (req: Request, res: Response) => {
         res.status(201).json({user: user._id});
     })  
     .catch((e) => {
-        const errors = handleErrors(e);
+        const errors = handleErrors(e as ValidationError);
         res.status(400).json({errors});
     })
 }
 
-const login_post = (req: Request, res: Response) => {
+const login_post = async (req: Request, res: Response) => {
     const {email, password} = req.body;
-    res.send('user logged in');
+    try {
+        const user = await User.login(email, password);
+        const token = createToken(user._id);
+        res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000}); // 3 days in ms
+        res.status(200).json({user: user._id});
+    } catch (e) {
+        const errors = handleErrors(e as ValidationError);
+        res.status(400).json({ errors });
+    }
 }
 
 export { signup_get, login_get, signup_post, login_post }

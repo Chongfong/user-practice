@@ -159,3 +159,9 @@ button {
   font-size: 0.8em;
   font-weight: bold;
 }
+
+.btn {
+  padding: 4px 8px;
+  border-radius: 36px;
+  background: #fee996;
+}
