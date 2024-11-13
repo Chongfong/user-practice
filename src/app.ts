@@ -273,21 +273,21 @@ app.use(authRoutes);
 
 // cookies
 
-app.get('/set-cookies', (req:Request, res:Response) => {
-    // res.setHeader('Set-Cookie', 'newUser=true');
-    res.cookie('newUser', false);
-    res.cookie('isEmployee', true, {
-        maxAge: 1000 * 60 * 60 * 24, // 1 day, default is session
-        httpOnly: true,    // only server can access, not by js or frontend
-        // secure: true    // https only
-    });
-    res.send('you got cookies!');
-})
+// app.get('/set-cookies', (req:Request, res:Response) => {
+//     // res.setHeader('Set-Cookie', 'newUser=true');
+//     res.cookie('newUser', false);
+//     res.cookie('isEmployee', true, {
+//         maxAge: 1000 * 60 * 60 * 24, // 1 day, default is session
+//         httpOnly: true,    // only server can access, not by js or frontend
+//         // secure: true    // https only
+//     });
+//     res.send('you got cookies!');
+// })
 
-app.get('/read-cookies', (req:Request, res:Response) => {
-    const cookies = req.cookies;
-    res.json(cookies);
-})
+// app.get('/read-cookies', (req:Request, res:Response) => {
+//     const cookies = req.cookies;
+//     res.json(cookies);
+// })
 
 
 // 404 page

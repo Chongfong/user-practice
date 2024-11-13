@@ -16,13 +16,23 @@
     <script>
       const form = document.querySelector("form");
 
-      form.addEventListener("submit", (e) => {
+      form.addEventListener("submit", async (e) => {
         e.preventDefault(); // prevent refreshing the page
 
         const email = form.email.value;
         const password = form.password.value;
 
-        console.log(email, password);
+        try {
+          const res = await fetch("/signup", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", // REMEMBER to set content type
+            },
+            body: JSON.stringify({ email, password }), // REMEMBER to use JSON.stringify
+          });
+        } catch (e) {
+          console.log(e);
+        }
       });
     </script>
 
