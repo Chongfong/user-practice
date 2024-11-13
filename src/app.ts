@@ -17,6 +17,7 @@ import { Request, Response } from 'express';
 import blogRoutes from './routes/blogRoutes';
 import blogApiRoutes from './routes/blogApiRoutes';
 import authRoutes from './routes/authRoutes';
+import cookieParser from 'cookie-parser';
 mongoose.set('strictQuery', false);
 
 const PORT = process.env.PORT || 3000;
@@ -24,6 +25,7 @@ const MONGO_URI = process.env.CONNECT_URL
 
 app.use(express.json());  // remember to add this or the result will be undefined
 app.use(express.urlencoded({ extended: true }));  // remember to add this or the result will be undefined
+app.use(cookieParser());
 
 // middleware
 // 3rd party middleware like: morgan, helmet...
@@ -268,6 +270,25 @@ app.use('/api/blogs', blogApiRoutes);
 
 // auth routes
 app.use(authRoutes);
+
+// cookies
+
+// app.get('/set-cookies', (req:Request, res:Response) => {
+//     // res.setHeader('Set-Cookie', 'newUser=true');
+//     res.cookie('newUser', false);
+//     res.cookie('isEmployee', true, {
+//         maxAge: 1000 * 60 * 60 * 24, // 1 day, default is session
+//         httpOnly: true,    // only server can access, not by js or frontend
+//         // secure: true    // https only
+//     });
+//     res.send('you got cookies!');
+// })
+
+// app.get('/read-cookies', (req:Request, res:Response) => {
+//     const cookies = req.cookies;
+//     res.json(cookies);
+// })
+
 
 // 404 page
 // MUST BE AT THE END!!
