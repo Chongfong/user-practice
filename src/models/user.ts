@@ -1,6 +1,16 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Model, Types } from "mongoose";
 import { isEmail } from "validator";
 import bcrypt from 'bcrypt';
+
+interface IUser extends Document {
+    email: string;
+    password: string;
+    _id: Types.ObjectId;
+}
+
+interface IUserModel extends Model<IUser> {
+    login(email: string, password: string): Promise<IUser>;
+}
 
 const userSchema = new Schema({
     email: {
@@ -30,4 +40,19 @@ userSchema.pre('save', async function(next) {
     next();
 });
 
-export const User = model('user', userSchema);
+// static method to login user
+userSchema.statics.login = async function (email, password){  // statics.{anything} = static method
+    const user = await User.findOne({email});
+    if(user){
+        const auth = await bcrypt.compare(password, user.password)
+        if(auth){
+            return user;
+        } else {
+            throw Error('Invalid password');
+        }
+    } else {
+        throw Error('User not found');
+    }
+}
+
+export const User = model<IUser, IUserModel>('User', userSchema);

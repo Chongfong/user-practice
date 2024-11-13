@@ -60,9 +60,18 @@ const signup_post = (req: Request, res: Response) => {
     })
 }
 
-const login_post = (req: Request, res: Response) => {
+const login_post = async (req: Request, res: Response) => {
     const {email, password} = req.body;
-    res.send('user logged in');
+    try {
+        const user = await User.login(email, password);
+        res.status(200).json({user: user._id});
+    } catch (e) {
+        if (e instanceof Error) {
+            res.status(400).json({ error: e.message });
+        } else {
+            res.status(400).json({ error: 'An unknown error occurred' });
+        }
+    }
 }
 
 export { signup_get, login_get, signup_post, login_post }
