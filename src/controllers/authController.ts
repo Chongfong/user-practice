@@ -53,7 +53,7 @@ const signup_post = (req: Request, res: Response) => {
     })  
     .catch((e) => {
         const errors = handleErrors(e);
-        res.status(400).json({error: errors})
+        res.status(400).json({errors});
     })
 }
 

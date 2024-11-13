@@ -15,9 +15,15 @@
 
     <script>
       const form = document.querySelector("form");
+      const emailError = document.querySelector(".email.error");
+      const passwordError = document.querySelector(".password.error");
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault(); // prevent refreshing the page
+
+        // reset errors
+        emailError.textContent = "";
+        passwordError.textContent = "";
 
         const email = form.email.value;
         const password = form.password.value;
@@ -30,6 +36,16 @@
             },
             body: JSON.stringify({ email, password }), // REMEMBER to use JSON.stringify
           });
+
+          const data = await res.json();
+          if (data.errors) {
+            emailError.textContent = data.errors.email;
+            passwordError.textContent = data.errors.password;
+          }
+          if (data.user) {
+            // redirect to home page
+            location.assign("/");
+          }
         } catch (e) {
           console.log(e);
         }
