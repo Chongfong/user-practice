@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import { User } from "../models/user";
 import jwt from 'jsonwebtoken';
 import { Types } from "mongoose";
+import dotenv from 'dotenv';
+dotenv.config();
 
+const SECRET = process.env.SECRET_KEY as string;
 
 interface ValidationError {
     message: string;
@@ -30,7 +33,7 @@ const handleErrors = (err: ValidationError) => {
 
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id: Types.ObjectId) => {
-    return jwt.sign({id}, 'any secret key', {
+    return jwt.sign({id}, SECRET, {
         expiresIn: maxAge  // 3 days
     })
 }
