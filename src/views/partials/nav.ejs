@@ -4,11 +4,16 @@
     <p>A Blog site</p>
   </div>
   <ul>
-    <li><a href="/login">Login</a></li>
+    <!-- global variable from middleware -->
+    <% if(user) { %>
+    <li>Welcome, <%= user.email %></li>
     <li><a href="/logout">Log out</a></li>
+    <% } else { %>
+    <li><a href="/signup" class="btn">Sign up</a></li>
+    <li><a href="/login">Login</a></li>
+    <% } %>
     <li><a href="/">Home</a></li>
     <li><a href="/about">About</a></li>
     <li><a href="/blogs/create">New Blog</a></li>
-    <li><a href="/signup" class="btn">Sign up</a></li>
   </ul>
 </nav>
