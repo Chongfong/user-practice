@@ -269,6 +269,17 @@ app.use('/api/blogs', blogApiRoutes);
 // auth routes
 app.use(authRoutes);
 
+// cookies
+
+app.get('/set-cookies', (req:Request, res:Response) => {
+    res.setHeader('Set-Cookie', 'newUser=true');
+    res.send('You got the cookie');
+})
+
+app.get('/read-cookies', (req:Request, res:Response) => {
+})
+
+
 // 404 page
 // MUST BE AT THE END!!
 
